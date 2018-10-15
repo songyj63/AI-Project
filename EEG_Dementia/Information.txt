@@ -1,2 +1,12 @@
 2 channel eeg.
 classification Normal vs Dementia.
+
+
+# Data description
+# 2 channel EEG data. 1min, 256 s/s -> 15360 * 2ch
+# reshape to [60*2, 256]
+# ch1 0-1s data [n, 256]
+# ch2 0-1s data
+# ch1 1-2s data
+# ch2 1-2s data
+# Y - classifying to Normal and Dementia
