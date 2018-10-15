@@ -1,2 +1,2 @@
 2 channel eeg.
-classification Normal vs Dementia. 
+classification Normal vs Dementia.
