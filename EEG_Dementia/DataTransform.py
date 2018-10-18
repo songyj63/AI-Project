@@ -43,7 +43,7 @@ def create_data(size_n, size_d):
 
 
 
-def separate_data(x_normal, x_dementia, nTestingSize, dTestingSize):
+def separate_data_random(x_normal, x_dementia, nTestingSize, dTestingSize):
 
     nTotalSize = np.size(x_normal, axis=0)
     dTotalSize = np.size(x_dementia, axis=0)
@@ -59,6 +59,24 @@ def separate_data(x_normal, x_dementia, nTestingSize, dTestingSize):
 
     nTraining = np.delete(x_normal, nR, axis=0)
     dTraining = np.delete(x_dementia, dR, axis=0)
+
+    X_training = np.append(nTraining, dTraining, axis=0)
+    X_testing = np.append(nTesting, dTesting, axis=0)
+
+    return X_training, X_testing
+
+
+
+def separate_data(x_normal, x_dementia, nTestingSize, dTestingSize):
+
+    nTotalSize = np.size(x_normal, axis=0)
+    dTotalSize = np.size(x_dementia, axis=0)
+
+    nTraining = x_normal[0:nTotalSize-nTestingSize, :]
+    dTraining = x_dementia[0:dTotalSize-dTestingSize, :]
+
+    nTesting = x_normal[nTotalSize-nTestingSize:, :]
+    dTesting = x_dementia[dTotalSize-dTestingSize:, :]
 
     X_training = np.append(nTraining, dTraining, axis=0)
     X_testing = np.append(nTesting, dTesting, axis=0)
