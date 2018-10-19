@@ -51,9 +51,6 @@ def separate_data_random(x_normal, x_dementia, nTestingSize, dTestingSize):
     nR = np.random.choice(range(nTotalSize), nTestingSize, replace=False)
     dR = np.random.choice(range(dTotalSize), dTestingSize, replace=False)
 
-    print(nR)
-    print(dR)
-
     nTesting = x_normal[nR,:]
     dTesting = x_dementia[dR,:]
 
