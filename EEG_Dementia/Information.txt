@@ -10,3 +10,17 @@ classification Normal vs Dementia.
 # ch1 1-2s data
 # ch2 1-2s data
 # Y - classifying to Normal and Dementia
+
+
+
+Normal CNN method (based on the paper:
+"Predicting sex from brain rhythms with deep learning")
+
+vs
+
+FFT feature extraction applied method - CNN
+
+vs
+
+typical EEG classification method (LDA, SVM)
+
