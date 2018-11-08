@@ -23,7 +23,7 @@ if (os.path.isfile('Data/Data_Normal.npy')) and (os.path.isfile('Data/Data_Demen
     X_Dementia = np.load('Data/Data_Dementia.npy')
 else:
     print("create data")
-    dt.create_data(28, 45)  # X_Normal size, X_Dementia size
+    dt.create_data_raw(28, 45)  # X_Normal size, X_Dementia size
     X_Normal = np.load('Data/Data_Normal.npy')
     X_Dementia = np.load('Data/Data_Dementia.npy')
 

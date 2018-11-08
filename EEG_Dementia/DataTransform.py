@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def create_data(size_n, size_d):
+def create_data_raw(size_n, size_d):
 
     # Data description
     # 2 channel EEG data. 1min, 256 s/s -> 15360 * 2ch
@@ -41,6 +41,35 @@ def create_data(size_n, size_d):
     np.save('Data/Data_Normal', X_Normal)
     np.save('Data/Data_Dementia', X_Dementia)
 
+
+def create_data_fft(size_n, size_d):
+
+    # Freq series data
+    # 0-50 Hz FFT 2 channel data
+    # each participant: [3000 2]
+    # [0-50 freq info, 2ch]
+
+    X_Normal_FFT = np.empty((size_n, 3000, 2))  # 28 subjects, 3000 (fft freq 0-50 Hz), 2 channel
+    X_Dementia_FFT = np.empty((size_d, 3000, 2))  # 45 subjects, 3000 (fft freq 0-50 Hz), 2 channel
+
+    for i in range(1, size_n + 1):
+        fPath = "Data/Data_FFT/Normal/N (" + str(i) + ")_FFT.csv"
+        file_obj = open(fPath, "r")
+        mat = file_obj.read()
+        arr = np.matrix(mat)
+        arr = np.reshape(arr, (-1, 2))
+        X_Normal_FFT[i - 1, :, :] = arr
+
+    for i in range(1, size_d + 1):
+        fPath = "Data/Data_FFT/Dementia/D (" + str(i) + ")_FFT.csv"
+        file_obj = open(fPath, "r")
+        mat = file_obj.read()
+        arr = np.matrix(mat)
+        arr = np.reshape(arr, (-1, 2))
+        X_Dementia_FFT[i - 1, :, :] = arr
+
+    np.save('Data/Data_Normal_FFT', X_Normal_FFT)
+    np.save('Data/Data_Dementia_FFT', X_Dementia_FFT)
 
 
 def separate_data_random(x_normal, x_dementia, nTestingSize, dTestingSize):

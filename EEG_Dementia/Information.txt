@@ -1,8 +1,10 @@
 2 channel eeg.
 classification Normal vs Dementia.
 
-
 # Data description
+
+# Raw data
+# Time series data
 # 2 channel EEG data. 1min, 256 s/s -> 15360 * 2ch
 # reshape to [60*2, 256]
 # ch1 0-1s data [n, 256]
@@ -10,6 +12,20 @@ classification Normal vs Dementia.
 # ch1 1-2s data
 # ch2 1-2s data
 # Y - classifying to Normal and Dementia
+
+# Data_Normal.npy - 28 subjects, 60 window * 2 channel, 256 -> 1sec
+# Data_Dementia.npy - 45 subjects, 60 window * 2 channel, 256 -> 1sec
+
+
+# FFT data
+# Freq series data
+# 0-50 Hz FFT 2 channel data
+# each participant: [3000 2]
+# [0-50 freq info, 2ch]
+
+# Data_Normal_FFT.npy - 28 subjects, 3000 (fft freq 0-50 Hz), 2 channel
+# Data_Dementia_FFT.npy - 45 subjects, 3000 (fft freq 0-50 Hz), 2 channel
+
 
 
 
