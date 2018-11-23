@@ -5,3 +5,17 @@ Participants
 missing
 318, 321, 341, 342, 362, 394, 398, 460
 
+
+* Data description
+test_set.mat: [47, 3] - 47 * id, PHQ8 binary, PHQ8 score
+train_set.mat: [138, 3]
+
+X_P_Features.mat: [X, 79] - X (100 sample per sec) * 79 COVAREP features
+
+
+* Variables
+X_training (N, 300, 79): 300 indicate 3s features
+X_testing (M, 300, 79)
+
+labelSet_training (N, 3): N * [id, PHQ8 binary, PHQ8 score]
+labelSet_testing (M,3)
