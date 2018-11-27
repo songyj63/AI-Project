@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import Depression_Classification.DataTransform as dt
+from scipy.io import loadmat
 
 
 # # load mat data & save
@@ -8,6 +9,8 @@ import Depression_Classification.DataTransform as dt
 
 
 # load data
+# X_training = loadmat('Data/X_n.mat')['X_n']
+# labelSet_training = loadmat('Data/labelSet1.mat')['labelSet1']
 X_training = np.load('Data/X_training.npy')
 X_testing = np.load('Data/X_testing.npy')
 labelSet_training = np.load('Data/labelSet_training.npy')
@@ -28,27 +31,27 @@ is_training = tf.placeholder(tf.bool)
 # L1 Conv shape=(?, 300, 79, 32)
 #    Pool     ->(?, 150, 39, 32)
 # layer1. n of filter: 32, filter size: 3x3,
-L1 = tf.layers.conv2d(X, 8, [3, 3], padding='same', activation=tf.nn.relu)
+L1 = tf.layers.conv2d(X, 32, [3, 3], padding='same')
 L1 = tf.layers.max_pooling2d(L1, [2, 2], [2, 2])
 L1 = tf.layers.dropout(L1, 0.5, is_training)
 print(np.shape(L1))
 
 # L2 Conv shape=(?, 150, 39, 64)
 #    Pool     ->(?, 75, 19, 64)
-L2 = tf.layers.conv2d(L1, 16, [2, 2], padding='same')
+L2 = tf.layers.conv2d(L1, 64, [2, 2], padding='same')
 L2 = tf.layers.max_pooling2d(L2, [2, 2], [2, 2])
 L2 = tf.layers.dropout(L2, 0.5, is_training)
 print(np.shape(L2))
 
 # L3 Conv shape=(?, 75, 19, 16)
 #    Pool     ->(?, 25, 6, 32)
-L3 = tf.layers.conv2d(L2, 8, [3, 2], padding='same')
+L3 = tf.layers.conv2d(L2, 16, [3, 2], padding='same')
 L3 = tf.layers.max_pooling2d(L3, [3, 3], [3, 3])
 L3 = tf.layers.dropout(L3, 0.5, is_training)
 print(np.shape(L3))
 
 L4 = tf.contrib.layers.flatten(L3)
-L4 = tf.layers.dense(L4, 16)
+L4 = tf.layers.dense(L4, 79)
 L4 = tf.layers.dropout(L4, 0.5, is_training)
 print(np.shape(L4))
 
@@ -64,7 +67,7 @@ init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
-batch_size = 1000
+batch_size = 100
 total_batch = int(np.size(X_training, 0) / batch_size)
 
 for epoch in range(50):
@@ -77,7 +80,7 @@ for epoch in range(50):
                                           Y: batch_ys,
                                           is_training: True})
         total_cost += cost_val
-        print(total_cost)
+        print(cost_val)
 
     print('Epoch:', '%04d' % (epoch + 1),
               'Avg. cost =', '{:.4f}'.format(total_cost / total_batch))
