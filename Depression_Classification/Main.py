@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import Depression_Classification.DataTransform as dt
-from scipy.io import loadmat
 
 
 # # load mat data & save
@@ -9,18 +8,20 @@ from scipy.io import loadmat
 
 
 # load data
-# X_training = loadmat('Data/X_n.mat')['X_n']
-# labelSet_training = loadmat('Data/labelSet1.mat')['labelSet1']
-X_training = np.load('Data/X_training.npy')
-X_testing = np.load('Data/X_testing.npy')
+X_training = np.load('Data/X_training_Normalised.npy')
+X_testing = np.load('Data/X_testing_Normalised.npy')
 labelSet_training = np.load('Data/labelSet_training.npy')
 labelSet_testing = np.load('Data/labelSet_testing.npy')
 X_training = np.expand_dims(X_training, axis=4)
 X_testing = np.expand_dims(X_testing, axis=4)
-label_training = dt.one_hot(labelSet_training[:, 1]);
-label_testing = dt.one_hot(labelSet_testing[:, 1]);
+label_training = dt.one_hot(labelSet_training[:, 1])
+label_testing = dt.one_hot(labelSet_testing[:, 1])
+
+label_training = label_training[0:np.size(X_training, axis=0),:]
+
 print('data loaded')
-print(np.shape(X_training), np.shape(X_testing))
+print(np.shape(X_training), np.shape(label_training))
+print(np.shape(X_testing), np.shape(label_testing))
 
 
 # model
@@ -31,21 +32,21 @@ is_training = tf.placeholder(tf.bool)
 # L1 Conv shape=(?, 300, 79, 32)
 #    Pool     ->(?, 150, 39, 32)
 # layer1. n of filter: 32, filter size: 3x3,
-L1 = tf.layers.conv2d(X, 32, [3, 3], padding='same')
+L1 = tf.layers.conv2d(X, 8, [3, 3], padding='same')
 L1 = tf.layers.max_pooling2d(L1, [2, 2], [2, 2])
 L1 = tf.layers.dropout(L1, 0.5, is_training)
 print(np.shape(L1))
 
 # L2 Conv shape=(?, 150, 39, 64)
 #    Pool     ->(?, 75, 19, 64)
-L2 = tf.layers.conv2d(L1, 64, [2, 2], padding='same')
+L2 = tf.layers.conv2d(L1, 16, [2, 2], padding='same')
 L2 = tf.layers.max_pooling2d(L2, [2, 2], [2, 2])
 L2 = tf.layers.dropout(L2, 0.5, is_training)
 print(np.shape(L2))
 
 # L3 Conv shape=(?, 75, 19, 16)
 #    Pool     ->(?, 25, 6, 32)
-L3 = tf.layers.conv2d(L2, 16, [3, 2], padding='same')
+L3 = tf.layers.conv2d(L2, 8, [3, 2], padding='same')
 L3 = tf.layers.max_pooling2d(L3, [3, 3], [3, 3])
 L3 = tf.layers.dropout(L3, 0.5, is_training)
 print(np.shape(L3))
@@ -67,7 +68,7 @@ init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
-batch_size = 100
+batch_size = 1000
 total_batch = int(np.size(X_training, 0) / batch_size)
 
 for epoch in range(50):
