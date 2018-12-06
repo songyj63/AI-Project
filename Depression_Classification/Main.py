@@ -24,6 +24,8 @@ print(np.shape(X_training), np.shape(label_training))
 print(np.shape(X_testing), np.shape(label_testing))
 
 
+global_step = tf.Variable(0, trainable=False, name='global_step')
+
 # model
 X = tf.placeholder(tf.float32, [None, 300, 79, 1])
 Y = tf.placeholder(tf.float32, [None, 2])
@@ -60,13 +62,19 @@ model = tf.layers.dense(L4, 2, activation=None)
 print(np.shape(model))
 
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=model, labels=Y))
-optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
+optimizer = tf.train.AdamOptimizer(0.001).minimize(cost, global_step=global_step)
 
 
 # # training
-init = tf.global_variables_initializer()
 sess = tf.Session()
-sess.run(init)
+saver = tf.train.Saver(tf.global_variables())
+
+ckpt = tf.train.get_checkpoint_state('./model')
+
+if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
+    saver.restore(sess, ckpt.model_checkpoint_path)
+else:
+    sess.run(tf.global_variables_initializer())
 
 batch_size = 1000
 total_batch = int(np.size(X_training, 0) / batch_size)
@@ -85,6 +93,8 @@ for epoch in range(50):
 
     print('Epoch:', '%04d' % (epoch + 1),
               'Avg. cost =', '{:.4f}'.format(total_cost / total_batch))
+
+    saver.save(sess, './model/dnn.ckpt', global_step=global_step)
 
 # print("%.2f" % mean_acc[run])
 # print(sess.run(tf.argmax(model, 1),
