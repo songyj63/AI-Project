@@ -17,87 +17,102 @@ X_testing = np.expand_dims(X_testing, axis=4)
 label_training = dt.one_hot(labelSet_training[:, 1])
 label_testing = dt.one_hot(labelSet_testing[:, 1])
 
-label_training = label_training[0:np.size(X_training, axis=0),:]
-
 print('data loaded')
 print(np.shape(X_training), np.shape(label_training))
 print(np.shape(X_testing), np.shape(label_testing))
 
 
-global_step = tf.Variable(0, trainable=False, name='global_step')
-
-# model
-X = tf.placeholder(tf.float32, [None, 300, 79, 1])
-Y = tf.placeholder(tf.float32, [None, 2])
-is_training = tf.placeholder(tf.bool)
-
-# L1 Conv shape=(?, 300, 79, 32)
-#    Pool     ->(?, 150, 39, 32)
-# layer1. n of filter: 32, filter size: 3x3,
-L1 = tf.layers.conv2d(X, 8, [3, 3], padding='same')
-L1 = tf.layers.max_pooling2d(L1, [2, 2], [2, 2])
-L1 = tf.layers.dropout(L1, 0.5, is_training)
-print(np.shape(L1))
-
-# L2 Conv shape=(?, 150, 39, 64)
-#    Pool     ->(?, 75, 19, 64)
-L2 = tf.layers.conv2d(L1, 16, [2, 2], padding='same')
-L2 = tf.layers.max_pooling2d(L2, [2, 2], [2, 2])
-L2 = tf.layers.dropout(L2, 0.5, is_training)
-print(np.shape(L2))
-
-# L3 Conv shape=(?, 75, 19, 16)
-#    Pool     ->(?, 25, 6, 32)
-L3 = tf.layers.conv2d(L2, 8, [3, 2], padding='same')
-L3 = tf.layers.max_pooling2d(L3, [3, 3], [3, 3])
-L3 = tf.layers.dropout(L3, 0.5, is_training)
-print(np.shape(L3))
-
-L4 = tf.contrib.layers.flatten(L3)
-L4 = tf.layers.dense(L4, 79)
-L4 = tf.layers.dropout(L4, 0.5, is_training)
-print(np.shape(L4))
-
-model = tf.layers.dense(L4, 2, activation=None)
-print(np.shape(model))
-
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=model, labels=Y))
-optimizer = tf.train.AdamOptimizer(0.001).minimize(cost, global_step=global_step)
-
+# global_step = tf.Variable(0, trainable=False, name='global_step')
+#
+# # model
+# X = tf.placeholder(tf.float32, [None, 300, 79, 1])
+# Y = tf.placeholder(tf.float32, [None, 2])
+# is_training = tf.placeholder(tf.bool)
+#
+# # L1 Conv shape=(?, 300, 79, 32)
+# #    Pool     ->(?, 150, 39, 32)
+# # layer1. n of filter: 32, filter size: 3x3,
+# L1 = tf.layers.conv2d(X, 8, [3, 3], padding='same')
+# L1 = tf.layers.max_pooling2d(L1, [2, 2], [2, 2])
+# L1 = tf.layers.dropout(L1, 0.7, is_training)
+# print(np.shape(L1))
+#
+# # L2 Conv shape=(?, 150, 39, 64)
+# #    Pool     ->(?, 75, 19, 64)
+# L2 = tf.layers.conv2d(L1, 16, [2, 2], padding='same')
+# L2 = tf.layers.max_pooling2d(L2, [2, 2], [2, 2])
+# L2 = tf.layers.dropout(L2, 0.7, is_training)
+# print(np.shape(L2))
+#
+# # L3 Conv shape=(?, 75, 19, 16)
+# #    Pool     ->(?, 25, 6, 32)
+# L3 = tf.layers.conv2d(L2, 8, [3, 2], padding='same')
+# L3 = tf.layers.max_pooling2d(L3, [3, 3], [3, 3])
+# L3 = tf.layers.dropout(L3, 0.7, is_training)
+# print(np.shape(L3))
+#
+# L4 = tf.contrib.layers.flatten(L3)
+# L4 = tf.layers.dense(L4, 79)
+# L4 = tf.layers.dropout(L4, 0.7, is_training)
+# print(np.shape(L4))
+#
+# model = tf.layers.dense(L4, 2, activation=None)
+# print(np.shape(model))
+#
+# cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=model, labels=Y))
+# optimizer = tf.train.AdamOptimizer(0.001).minimize(cost, global_step=global_step)
+#
+#
+# sess = tf.Session()
+# saver = tf.train.Saver(tf.global_variables())
+#
+# ckpt = tf.train.get_checkpoint_state('./model')
+#
+# if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
+#     saver.restore(sess, ckpt.model_checkpoint_path)
+# else:
+#     sess.run(tf.global_variables_initializer())
+#
 
 # # training
-sess = tf.Session()
-saver = tf.train.Saver(tf.global_variables())
+# batch_size = 1000
+# total_batch = int(np.size(X_training, 0) / batch_size)
+#
+# for epoch in range(50):
+#     total_cost = 0
+#     for i in range(total_batch):
+#         batch_xs = X_training[batch_size * i:batch_size * (i + 1), :, :, :]
+#         batch_ys = label_training[batch_size * i:batch_size * (i + 1), :]
+#         _, cost_val = sess.run([optimizer, cost],
+#                                feed_dict={X: batch_xs,
+#                                           Y: batch_ys,
+#                                           is_training: True})
+#         total_cost += cost_val
+#         print(cost_val)
+#
+#     print('Epoch:', '%04d' % (epoch + 1),
+#               'Avg. cost =', '{:.4f}'.format(total_cost / total_batch))
+#
+#     saver.save(sess, './model/dnn.ckpt', global_step=global_step)
 
-ckpt = tf.train.get_checkpoint_state('./model')
 
-if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
-    saver.restore(sess, ckpt.model_checkpoint_path)
-else:
-    sess.run(tf.global_variables_initializer())
+# # testing
+# prediction = tf.argmax(model, 1)
+# target = tf.argmax(Y, 1)
+#
+# is_correct = tf.equal(prediction, target)
+# accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
+# print('정확도: %.2f' % sess.run(accuracy * 100, feed_dict={X: X_testing, Y: label_testing, is_training: False}))
 
-batch_size = 1000
-total_batch = int(np.size(X_training, 0) / batch_size)
-
-for epoch in range(50):
-    total_cost = 0
-    for i in range(total_batch):
-        batch_xs = X_training[batch_size * i:batch_size * (i + 1), :, :, :]
-        batch_ys = label_training[batch_size * i:batch_size * (i + 1), :]
-        _, cost_val = sess.run([optimizer, cost],
-                               feed_dict={X: batch_xs,
-                                          Y: batch_ys,
-                                          is_training: True})
-        total_cost += cost_val
-        print(cost_val)
-
-    print('Epoch:', '%04d' % (epoch + 1),
-              'Avg. cost =', '{:.4f}'.format(total_cost / total_batch))
-
-    saver.save(sess, './model/dnn.ckpt', global_step=global_step)
-
-# print("%.2f" % mean_acc[run])
-# print(sess.run(tf.argmax(model, 1),
-#                feed_dict={X: X_testing,
-#                           Y: label_testing,
-#                           is_training: False}))
+#
+# # testing (majority vote)
+# prediction = tf.argmax(model, 1)
+# pred = sess.run(prediction, feed_dict={X: X_testing, Y: label_testing, is_training: False})
+#
+# for i in range(np.size(labelSet_testing, 0)):
+#     print(i)
+#
+# print(type(pred))
+# print(np.shape(pred))
+#
+# print('done')

@@ -18,4 +18,4 @@ X_training (N, 300, 79): 300 indicate 3s features
 X_testing (M, 300, 79)
 
 labelSet_training (N, 3): N * [id, PHQ8 binary, PHQ8 score]
-labelSet_testing (M,3)
+labelSet_testing (M, 3)
