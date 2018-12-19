@@ -19,3 +19,9 @@ X_testing (M, 300, 79)
 
 labelSet_training (N, 3): N * [id, PHQ8 binary, PHQ8 score]
 labelSet_testing (M, 3)
+
+* Sovling biased Data sample size
+X_training_balanced
+labetSet_training
+-> removed half of the non-depressed participant
+-> PHQ8 score 9, 8, 7, 6, 5, 4, 3 (non-depressed) were removed

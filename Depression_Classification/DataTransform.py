@@ -34,23 +34,23 @@ def create_data():
 def load_mat_data_save():
 
     # X_training.mat: mat version 7.3 as the size is too big - it requires different mat loading code
-    f = h5py.File('Data/Data_mat/X_training.mat', 'r')
-    data = f.get('X_training')
+    f = h5py.File('Data/Data_mat/X_training_Normalised_balanced.mat', 'r')
+    data = f.get('X_training_Normalised_balanced')
     data = np.array(data)
-    X_training = np.swapaxes(data,0,2)
+    X_training = np.swapaxes(data, 0, 2)
     print(np.shape(X_training))
 
-    X_testing = loadmat('Data/Data_mat/X_testing.mat')['X_testing']
+    X_testing = loadmat('Data/Data_mat/X_testing_Normalised.mat')['X_testing_Normalised']
     print(np.shape(X_testing))
 
-    labelSet_training = loadmat('Data/Data_mat/labelSet_training.mat')['labelSet_training']
+    labelSet_training = loadmat('Data/Data_mat/labelSet_training_balanced.mat')['labelSet_training_balanced']
     labelSet_testing = loadmat('Data/Data_mat/labelSet_testing.mat')['labelSet_testing']
     print(np.shape(labelSet_training))
     print(np.shape(labelSet_testing))
 
-    np.save('Data/X_training', X_training)
-    np.save('Data/X_testing', X_testing)
-    np.save('Data/labelSet_training', labelSet_training)
+    np.save('Data/X_training_Normalised_balanced', X_training)
+    np.save('Data/X_testing_Normalised', X_testing)
+    np.save('Data/labelSet_training_balanced', labelSet_training)
     np.save('Data/labelSet_testing', labelSet_testing)
 
 
