@@ -21,7 +21,15 @@ labelSet_training (N, 3): N * [id, PHQ8 binary, PHQ8 score]
 labelSet_testing (M, 3)
 
 * Sovling biased Data sample size
-X_training_balanced
-labetSet_training
--> removed half of the non-depressed participant
--> PHQ8 score 9, 8, 7, 6, 5, 4, 3 (non-depressed) were removed
+X_training_balanced_shuffled
+labetSet_training_balanced_shuffled
+
+original depressed sample size (training) : 6330
+original un_depressed sample size (training) : 14104
+->
+original depressed sample size (training) * 2 : 12660
+original un_depressed sample size (training) : 14104
+->
+shuffle data
+original label example : 0 0 0 0... 0 0 0 1 1...1 1 0 0 0... 0 0
+shuffled data label example : 0 1 0 0 1 1 0 1 0 1 ...
